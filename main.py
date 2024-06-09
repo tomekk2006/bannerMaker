@@ -14,7 +14,7 @@ if __name__ == '__main__':
     bases = getAllBases()
     scores = scoreList(bases, target)
     for x in range(iterations):
-        print(f"Baking: {x+1}/{iterations}")
+        print(f"🎂 Baking: {x+1}/{iterations}")
         scores = scoreComboList(scores, target)
         if x == 0:
             scores = [ score for score in scores if len(score.banner.getCode()) > 3 and score.banner.getCode()[0] != score.banner.getCode()[2]]

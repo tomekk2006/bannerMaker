@@ -127,7 +127,7 @@ def threadScoreCombos(score:Score, target, queue:Queue, output:list):
                 Score(banner,calculateScore(banner, target)))
     output += scores
     task = queue.get()
-    print(f"thread{task} finished.")
+    print(f"✅ thread {task}")
     queue.task_done()
 
 # save all scores from a list
@@ -147,7 +147,7 @@ def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
     queue = Queue()
     for i in range(len(scores)):
-        print(f"thread{i} started")
+        print(f"🔄️ thread {i}")
         Thread(target=threadScoreCombos, args=(scores[i], target, queue, output), daemon=True).start()
         queue.put(i)
     queue.join()
