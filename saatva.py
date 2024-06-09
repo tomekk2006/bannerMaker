@@ -129,5 +129,7 @@ def scoreList(banners:list[Banner], target) -> list[Score]:
 def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
     for score in scores:
+        print("🔄️ Creating")
         output += scoreCombos(score, target)
+        print("✅ Created Score")
     return output
