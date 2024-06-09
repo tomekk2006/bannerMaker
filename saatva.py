@@ -2,7 +2,8 @@ from PIL import Image, ImageChops, ImageColor
 from constants import *
 import math
 import copy
-
+from queue import Queue
+from threading import Thread
 #texture class
 class Texture:
     image:Image.Image
@@ -113,6 +114,22 @@ def scoreCombos(score:Score, target):
                 Score(banner,calculateScore(banner, target)))
     return scores
 
+def threadScoreCombos(score:Score, target, queue:Queue, output:list):
+    textureCodes = getLegacyTextureCodes()[1:]
+    colorCodes = getColorCodes()
+    scores = [score]
+    for textureCode in textureCodes:
+        for colorCode in colorCodes:
+            banner = copy.deepcopy(score.banner)
+            texture = Texture(textureCode, colorCode)
+            banner.addTexture(texture)    
+            scores.append(
+                Score(banner,calculateScore(banner, target)))
+    output += scores
+    task = queue.get()
+    print(f"thread{task} finished.")
+    queue.task_done()
+
 # save all scores from a list
 def save(scores:list[Score]):
     for i in range(len(scores)):
@@ -128,6 +145,10 @@ def scoreList(banners:list[Banner], target) -> list[Score]:
 
 def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
-    for score in scores:
-        output += scoreCombos(score, target)
+    queue = Queue()
+    for i in range(len(scores)):
+        print(f"thread{i} started")
+        Thread(target=threadScoreCombos, args=(scores[i], target, queue, output), daemon=True).start()
+        queue.put(i)
+    queue.join()
     return output
