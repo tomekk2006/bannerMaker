@@ -4,6 +4,7 @@ import math
 import copy
 from queue import Queue
 from threading import Thread
+import time
 #texture class
 class Texture:
     image:Image.Image
@@ -115,9 +116,11 @@ def scoreCombos(score:Score, target):
     return scores
 
 def threadScoreCombos(score:Score, target, queue:Queue, output:list):
+    
     textureCodes = getLegacyTextureCodes()[1:]
     colorCodes = getColorCodes()
     scores = [score]
+    start = time.time()
     for textureCode in textureCodes:
         for colorCode in colorCodes:
             banner = copy.deepcopy(score.banner)
@@ -125,6 +128,8 @@ def threadScoreCombos(score:Score, target, queue:Queue, output:list):
             banner.addTexture(texture)    
             scores.append(
                 Score(banner,calculateScore(banner, target)))
+    end = time.time()
+    print(f"Ended in {end-start} seconds")
     output += scores
     task = queue.get()
     print(f"✅ thread {task}")
@@ -146,9 +151,12 @@ def scoreList(banners:list[Banner], target) -> list[Score]:
 def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
     queue = Queue()
+    threads = []
     for i in range(len(scores)):
         print(f"🔄️ thread {i}")
-        Thread(target=threadScoreCombos, args=(scores[i], target, queue, output), daemon=True).start()
+        t = Thread(target=threadScoreCombos, args=(scores[i], target, queue, output), daemon=True)
+        threads.append(t)
+        t.start()
         queue.put(i)
     queue.join()
     return output
