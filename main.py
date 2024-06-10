@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 if __name__ == '__main__':
     
-    print("🖌️  Banner Creator by tomekk06")
+    print("Banner Creator by tomekk06")
     input("Press enter to select an image to convert")
     resultPath = "results/result.png"
     target = tkinter.filedialog.askopenfilename()
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     maxScores = 8   # max 61
     iterations = 8 # max 8
     
-    layerProgress = tqdm(total=iterations, desc="Adding layers", unit="layer")
+    layerProgress = tqdm(total=iterations, desc="Progress", unit="layer")
     
     
     start = time.time()
