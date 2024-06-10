@@ -20,7 +20,7 @@ _textures = [
     ["banners/half_horizontal.png","q"],
     ["banners/half_vertical_right.png","M"],
     ["banners/half_vertical.png","H"],
-    ["banners/mojang.png","u"],
+    ["banners/mojang.png",None], # not available for optifine (n)
     ["banners/piglin.png",None],
     ["banners/rhombus.png","v"],
     ["banners/skull.png","A"],
@@ -44,22 +44,22 @@ _textures = [
     ["banners/triangles_top.png","G"]
 ]
 _colors = [
-    ["#1D1D21","black","a"],
-    ["#B02E26","red","b"],
+    ["#191919","black","a"],
+    ["#993333","red","b"],
     ["#5E7C16","green","c"],
-    ["#835432","brown","d"],
-    ["#3C44AA","blue","e"],
-    ["#8932B8","purple","f"],
-    ["#169C9C","cyan","g"],
-    ["#9D9D97","light_gray","h"],
-    ["#474F52","gray","i"],
-    ["#F38BAA","pink","j"],
-    ["#80C71F","lime","k"],
-    ["#FED83D","yellow","l"],
-    ["#3AB3DA","light_blue","m"],
-    ["#C74EBD","magenta","n"],
-    ["#F9801D","orange","o"],
-    ["#F9FFFE","white","p"],
+    ["#664C33","brown","d"],
+    ["#334CB2","blue","e"],
+    ["#7F3FB2","purple","f"],
+    ["#4C7F99","cyan","g"],
+    ["#999999","light_gray","h"],
+    ["#4C4C4C","gray","i"],
+    ["#F27FA5","pink","j"],
+    ["#7FCC19","lime","k"],
+    ["#E5E533","yellow","l"],
+    ["#6699D8","light_blue","m"],
+    ["#B24CD8","magenta","n"],
+    ["#D87F33","orange","o"],
+    ["#FFFFFF","white","p"],
 ]
 class ColorNames:
     black = "black"

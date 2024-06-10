@@ -10,15 +10,37 @@ from tqdm import tqdm
 if __name__ == '__main__':
     
     print("Banner Creator by tomekk06")
+    
+    #default settings
+    maxScores = 8   # max 61
+    iterations = 8 # max 8
+    
+    # check .settings file for config
+    print("Checking for settings...")
+    settings = open('.settings', 'r')
+    for option in settings:
+        if "#" in option:
+            option = option.split("#")
+        else:
+            option = [option]
+        
+        if ":" not in option[0]:
+            continue
+        option = option[0].split(':') + option[1:]
+        if "layer" in option[0]:
+            iterations = int(option[1])
+            print(f"layer is set to {iterations}")
+        elif "quality" in option[0]:
+            maxScores = int(option[1])
+            print(f"quality is set to {maxScores}")
+    
+    # processing target
     input("Press enter to select an image to convert")
-    resultPath = "results/result.png"
     target = tkinter.filedialog.askopenfilename()
     target = Image.open(target).convert("RGBA")
     if target.size != (20,40):
         target = target.resize((20,40))
         target.save('converted_target.png')
-    maxScores = 8   # max 61
-    iterations = 8 # max 8
     
     layerProgress = tqdm(total=iterations, desc="Progress", unit="layer")
     
@@ -41,7 +63,7 @@ if __name__ == '__main__':
     print(f"🏁 Finished in {end-start} seconds")
     print("Result saved as 'result.png'")
     print(f"Url: https://livzmc.net/banner/?={scores[0].banner.getCode()}")
-
+    input("Press enter to close window")
 
 
 
