@@ -2,9 +2,9 @@ from PIL import Image, ImageChops, ImageColor
 from constants import *
 import math
 import copy
-from queue import Queue
-from threading import Thread
+from multiprocessing.pool import Pool, ThreadPool, AsyncResult
 import time
+
 #texture class
 class Texture:
     image:Image.Image
@@ -91,14 +91,14 @@ def sortScores(scores:list[Score], max=0, reverse=False):
         return scores
     
 # create banners with 16 coloured bases
-def getAllBases() -> list[Banner]:
+def getAllBases(colorCode=None) -> list[Banner]:
     banners:list[Banner]=[]
     colorCodes = getColorCodes()
     for color in colorCodes:
-        banner = Banner()
-        banner.addTexture(Texture("a",color).convert("RGBA"))
-        
-        banners.append(banner)
+        if colorCode == None or colorCode == color:
+            banner = Banner()
+            banner.addTexture(Texture("a",color).convert("RGBA"))
+            banners.append(banner)
     return banners
 
 # get all combonation of a single score
@@ -115,26 +115,6 @@ def scoreCombos(score:Score, target):
                 Score(banner,calculateScore(banner, target)))
     return scores
 
-def threadScoreCombos(score:Score, target, queue:Queue, output:list):
-    
-    textureCodes = getLegacyTextureCodes()[1:]
-    colorCodes = getColorCodes()
-    scores = [score]
-    start = time.time()
-    for textureCode in textureCodes:
-        for colorCode in colorCodes:
-            banner = copy.deepcopy(score.banner)
-            texture = Texture(textureCode, colorCode)
-            banner.addTexture(texture)    
-            scores.append(
-                Score(banner,calculateScore(banner, target)))
-    end = time.time()
-    print(f"Ended in {end-start} seconds")
-    output += scores
-    task = queue.get()
-    print(f"✅ thread {task}")
-    queue.task_done()
-
 # save all scores from a list
 def save(scores:list[Score]):
     for i in range(len(scores)):
@@ -150,13 +130,10 @@ def scoreList(banners:list[Banner], target) -> list[Score]:
 
 def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
-    queue = Queue()
-    threads = []
-    for i in range(len(scores)):
-        print(f"🔄️ thread {i}")
-        t = Thread(target=threadScoreCombos, args=(scores[i], target, queue, output), daemon=True)
-        threads.append(t)
-        t.start()
-        queue.put(i)
-    queue.join()
+    pool = Pool(len(scores))
+    processes:list[AsyncResult] = []
+    for score in scores:
+        processes.append(pool.apply_async(func=scoreCombos, args=(score, target)))
+    for process in processes:
+        output += process.get()
     return output
