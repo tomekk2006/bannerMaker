@@ -2,6 +2,8 @@ from PIL import Image, ImageChops, ImageColor
 from constants import *
 import math
 import copy
+from multiprocessing.pool import Pool, ThreadPool, AsyncResult
+import time
 
 #texture class
 class Texture:
@@ -89,14 +91,14 @@ def sortScores(scores:list[Score], max=0, reverse=False):
         return scores
     
 # create banners with 16 coloured bases
-def getAllBases() -> list[Banner]:
+def getAllBases(colorCode=None) -> list[Banner]:
     banners:list[Banner]=[]
     colorCodes = getColorCodes()
     for color in colorCodes:
-        banner = Banner()
-        banner.addTexture(Texture("a",color).convert("RGBA"))
-        
-        banners.append(banner)
+        if colorCode == None or colorCode == color:
+            banner = Banner()
+            banner.addTexture(Texture("a",color).convert("RGBA"))
+            banners.append(banner)
     return banners
 
 # get all combonation of a single score
@@ -128,8 +130,10 @@ def scoreList(banners:list[Banner], target) -> list[Score]:
 
 def scoreComboList(scores:list[Score], target) -> list[Score]:
     output = []
+    pool = Pool(len(scores))
+    processes:list[AsyncResult] = []
     for score in scores:
-        print("🔄️ Creating")
-        output += scoreCombos(score, target)
-        print("✅ Created Score")
+        processes.append(pool.apply_async(func=scoreCombos, args=(score, target)))
+    for process in processes:
+        output += process.get()
     return output
