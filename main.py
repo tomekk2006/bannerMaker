@@ -36,15 +36,17 @@ if __name__ == '__main__':
     
     # processing target
     input("Press enter to select an image to convert")
+    print("File dialog may be hidden behind the command prompt")
     target = tkinter.filedialog.askopenfilename()
     target = Image.open(target).convert("RGBA")
     if target.size != (20,40):
         target = target.resize((20,40))
         target.save('converted_target.png')
     
-    layerProgress = tqdm(total=iterations, desc="Progress", unit="layer")
+    # progress bar
+    layerProgress = tqdm(total=iterations, desc="Progress", unit="iteration")
     
-    
+    # main loop
     start = time.time()
     bases = getAllBases()
     scores = scoreList(bases, target)
@@ -56,11 +58,12 @@ if __name__ == '__main__':
         else:
             scores = [ score for score in scores if len(score.banner.getCode()) > 3 and score.banner.getCode()[-1] != score.banner.getCode()[-3]]
         scores = sortScores(scores, maxScores)
-    
+        
+    # finish
     layerProgress.close()
     scores[0].banner.image.save('result.png')
     end = time.time()
-    print(f"🏁 Finished in {end-start} seconds")
+    print(f"Finished in {end-start} seconds")
     print("Result saved as 'result.png'")
     print(f"Url: https://livzmc.net/banner/?={scores[0].banner.getCode()}")
     input("Press enter to close window")
