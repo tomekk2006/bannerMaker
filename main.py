@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 if __name__ == '__main__':
     
-    print("Banner Creator by tomekk06")
+    print("Banner Maker by tomekk06")
     
     #default settings
     maxScores = 8   # max 61
