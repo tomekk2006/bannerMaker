@@ -1,4 +1,4 @@
-# Banner Creator
+# Banner Maker
 ### About
 It uses an image to create a banner in Minecraft. It generates combinations of available minecraft textures and scores how close the banner is to the target image.
 ### Prerequisites
